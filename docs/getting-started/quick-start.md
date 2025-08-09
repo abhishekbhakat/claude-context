@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get Claude Context running with AI assistants in under 5 minutes! This guide covers the most common setup using MCP (Model Context Protocol) with Claude Code.
+Get Code Context running with AI assistants in under 5 minutes! This guide covers the most common setup using MCP (Model Context Protocol) with Claude Code.
 
 ## 🚀 1-Minute Setup for Claude Code
 
@@ -9,23 +9,23 @@ Get Claude Context running with AI assistants in under 5 minutes! This guide cov
 You'll need two API keys:
 
 1. **OpenAI API Key**: Get from [OpenAI Platform](https://platform.openai.com/api-keys)
-2. **Zilliz Cloud API Key**: ![](../../assets/signup_and_get_apikey.png)
- [Sign up](https://cloud.zilliz.com/signup?utm_source=github&utm_medium=referral&utm_campaign=2507-codecontext-readme) on Zilliz Cloud to get an API key.
+2. **local LanceDB API Key**: ![](../../assets/signup_and_get_apikey.png)
+ [Sign up](https://localhost.com/signup?utm_source=github&utm_medium=referral&utm_campaign=2507-codecontext-readme) on local LanceDB to get an API key.
 
 ### Step 2: Configure Claude Code
 
-Run this single command to add Claude Context to Claude Code:
+Run this single command to add Code Context to Claude Code:
 
 ```bash
 claude mcp add claude-context \
   -e OPENAI_API_KEY=sk-your-openai-api-key \
-  -e MILVUS_TOKEN=your-zilliz-cloud-api-key \
-  -- npx @zilliz/claude-context-mcp@latest
+  -e LANCEDB_PATH=./.lancedb \
+  -- node packages/mcp/dist/index.js
 ```
 
 Replace the API keys with your actual keys.
 
-### Step 3: Start Using Claude Context
+### Step 3: Start Using Code Context
 
 1. **Open Claude Code** in your project directory
 2. **Index your codebase**:
@@ -51,10 +51,10 @@ Create or edit the `~/.qwen/settings.json` file and add the following configurat
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["@zilliz/claude-context-mcp@latest"],
+      "args": ["@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -76,11 +76,11 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "EMBEDDING_PROVIDER": "OpenAI",
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -93,12 +93,12 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "EMBEDDING_PROVIDER": "VoyageAI",
         "VOYAGEAI_API_KEY": "your-voyageai-api-key",
         "EMBEDDING_MODEL": "voyage-code-3",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -111,11 +111,11 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "EMBEDDING_PROVIDER": "Gemini",
         "GEMINI_API_KEY": "your-gemini-api-key",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -128,12 +128,12 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "EMBEDDING_PROVIDER": "Ollama",
         "EMBEDDING_MODEL": "nomic-embed-text",
         "OLLAMA_HOST": "http://127.0.0.1:11434",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -156,11 +156,11 @@ Add the following configuration to your Void MCP settings:
   "mcpServers": {
     "code-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -180,10 +180,10 @@ Add to your Claude Desktop configuration:
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["@zilliz/claude-context-mcp@latest"],
+      "args": ["@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -195,11 +195,10 @@ Add to your Claude Desktop configuration:
 <details>
 <summary><strong>Claude Code</strong></summary>
 
-Use the command line interface to add the Claude Context MCP server:
+Use the command line interface to add the Code Context MCP server:
 
 ```bash
-# Add the Claude Context MCP server
-claude mcp add claude-context -e OPENAI_API_KEY=your-openai-api-key -e MILVUS_TOKEN=your-zilliz-cloud-api-key -- npx @zilliz/claude-context-mcp@latest
+claude mcp add claude-context -e OPENAI_API_KEY=your-openai-api-key -e LANCEDB_PATH=./.lancedb -- node packages/mcp/dist/index.js
 
 ```
 
@@ -219,10 +218,10 @@ Windsurf supports MCP configuration through a JSON file. Add the following confi
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -234,17 +233,17 @@ Windsurf supports MCP configuration through a JSON file. Add the following confi
 <details>
 <summary><strong>VS Code</strong></summary>
 
-The Claude Context MCP server can be used with VS Code through MCP-compatible extensions. Add the following configuration to your VS Code MCP settings:
+The Code Context MCP server can be used with VS Code through MCP-compatible extensions. Add the following configuration to your VS Code MCP settings:
 
 ```json
 {
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -263,10 +262,10 @@ Cherry Studio allows for visual MCP server configuration through its settings in
    - **Name**: `claude-context`
    - **Type**: `STDIO`
    - **Command**: `npx`
-   - **Arguments**: `["@zilliz/claude-context-mcp@latest"]`
+   - **Arguments**: `["@lancedb/claude-context-mcp@latest"]`
    - **Environment Variables**:
      - `OPENAI_API_KEY`: `your-openai-api-key`
-     - `MILVUS_TOKEN`: `your-zilliz-cloud-api-key`
+     - `LANCEDB_PATH`: `./.lancedb`
 3. Save the configuration to activate the server.
 
 </details>
@@ -287,10 +286,10 @@ Cline uses a JSON configuration file to manage MCP servers. To integrate the pro
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["@zilliz/claude-context-mcp@latest"],
+      "args": ["@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -305,7 +304,7 @@ Cline uses a JSON configuration file to manage MCP servers. To integrate the pro
 <details>
 <summary><strong>Augment</strong></summary>
 
-To configure Claude Context MCP in Augment Code, you can use either the graphical interface or manual configuration.
+To configure Code Context MCP in Augment Code, you can use either the graphical interface or manual configuration.
 
 #### **A. Using the Augment Code UI**
 
@@ -320,10 +319,10 @@ To configure Claude Context MCP in Augment Code, you can use either the graphica
 5. Enter the following command:
 
    ```
-   npx @zilliz/claude-context-mcp@latest
+   node packages/mcp/dist/index.js
    ```
 
-6. Name the MCP: **Claude Context**.
+6. Name the MCP: **Code Context**.
 
 7. Click the **Add** button.
 
@@ -342,11 +341,11 @@ To configure Claude Context MCP in Augment Code, you can use either the graphica
     { 
       "name": "claude-context", 
       "command": "npx", 
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   ]
@@ -369,11 +368,11 @@ Roo Code utilizes a JSON configuration file for MCP servers:
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["@zilliz/claude-context-mcp@latest"],
+      "args": ["@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -391,7 +390,7 @@ Roo Code utilizes a JSON configuration file for MCP servers:
 The server uses stdio transport and follows the standard MCP protocol. It can be integrated with any MCP-compatible client by running:
 
 ```bash
-npx @zilliz/claude-context-mcp@latest
+node packages/mcp/dist/index.js
 ```
 
 </details>

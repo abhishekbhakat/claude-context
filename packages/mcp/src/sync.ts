@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { Context, FileSynchronizer } from "@zilliz/claude-context-core";
+import { Context, FileSynchronizer } from "code-context-core";
 import { SnapshotManager } from "./snapshot.js";
 
 export class SyncManager {
@@ -79,10 +79,8 @@ export class SyncManager {
                     console.error(`[SYNC-DEBUG] Error syncing codebase '${codebasePath}' after ${codebaseElapsed}ms:`, error);
                     console.error(`[SYNC-DEBUG] Error stack:`, error.stack);
 
-                    if (error.message.includes('Failed to query Milvus')) {
-                        // Collection maybe deleted manually, delete the snapshot file
-                        await FileSynchronizer.deleteSnapshot(codebasePath);
-                    }
+                    // If backend query failed or collection disappeared, refresh snapshot
+                    await FileSynchronizer.deleteSnapshot(codebasePath);
 
                     // Log additional error details
                     if (error.code) {

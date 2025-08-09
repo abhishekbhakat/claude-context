@@ -21,8 +21,9 @@ import {
     ListToolsRequestSchema,
     CallToolRequestSchema
 } from "@modelcontextprotocol/sdk/types.js";
-import { Context } from "@zilliz/claude-context-core";
-import { MilvusVectorDatabase } from "@zilliz/claude-context-core";
+import { Context } from "code-context-core";
+import { LanceVectorDatabase } from "code-context-core";
+import os from 'os';
 
 // Import our modular components
 import { createMcpConfig, logConfigurationSummary, showHelpMessage, ContextMcpConfig } from "./config.js";
@@ -59,13 +60,13 @@ class ContextMcpServer {
         const embedding = createEmbeddingInstance(config);
         logEmbeddingProviderInfo(config, embedding);
 
-        // Initialize vector database
-        const vectorDatabase = new MilvusVectorDatabase({
-            address: config.milvusAddress,
-            ...(config.milvusToken && { token: config.milvusToken })
+        // Initialize vector database (LanceDB only)
+        const lancedbPath = config.lancedbPath || os.tmpdir();
+        const vectorDatabase = new LanceVectorDatabase({
+            dbPath: lancedbPath,
         });
 
-        // Initialize Claude Context
+        // Initialize Code Context
         this.context = new Context({
             embedding,
             vectorDatabase
@@ -180,14 +181,6 @@ This tool is versatile and can be used before completing various tasks to retrie
                                     description: "Maximum number of results to return",
                                     default: 10,
                                     maximum: 50
-                                },
-                                extensionFilter: {
-                                    type: "array",
-                                    items: {
-                                        type: "string"
-                                    },
-                                    description: "Optional: List of file extensions to filter results. (e.g., ['.ts','.py']).",
-                                    default: []
                                 }
                             },
                             required: ["path", "query"]

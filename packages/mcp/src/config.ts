@@ -1,4 +1,4 @@
-import { envManager } from "@zilliz/claude-context-core";
+import { envManager } from "code-context-core";
 
 export interface ContextMcpConfig {
     name: string;
@@ -15,8 +15,7 @@ export interface ContextMcpConfig {
     ollamaModel?: string;
     ollamaHost?: string;
     // Vector database configuration
-    milvusAddress?: string; // Optional, can be auto-resolved from token
-    milvusToken?: string;
+    lancedbPath?: string;   // Filesystem path for LanceDB storage
 }
 
 export interface CodebaseSnapshot {
@@ -66,7 +65,7 @@ export function createMcpConfig(): ContextMcpConfig {
     console.log(`[DEBUG]   OLLAMA_MODEL: ${envManager.get('OLLAMA_MODEL') || 'NOT SET'}`);
     console.log(`[DEBUG]   GEMINI_API_KEY: ${envManager.get('GEMINI_API_KEY') ? 'SET (length: ' + envManager.get('GEMINI_API_KEY')!.length + ')' : 'NOT SET'}`);
     console.log(`[DEBUG]   OPENAI_API_KEY: ${envManager.get('OPENAI_API_KEY') ? 'SET (length: ' + envManager.get('OPENAI_API_KEY')!.length + ')' : 'NOT SET'}`);
-    console.log(`[DEBUG]   MILVUS_ADDRESS: ${envManager.get('MILVUS_ADDRESS') || 'NOT SET'}`);
+    console.log(`[DEBUG]   LANCEDB_PATH: ${envManager.get('LANCEDB_PATH') || 'NOT SET'}`);
     console.log(`[DEBUG]   NODE_ENV: ${envManager.get('NODE_ENV') || 'NOT SET'}`);
 
     const config: ContextMcpConfig = {
@@ -84,8 +83,7 @@ export function createMcpConfig(): ContextMcpConfig {
         ollamaModel: envManager.get('OLLAMA_MODEL'),
         ollamaHost: envManager.get('OLLAMA_HOST'),
         // Vector database configuration - address can be auto-resolved from token
-        milvusAddress: envManager.get('MILVUS_ADDRESS'), // Optional, can be resolved from token
-        milvusToken: envManager.get('MILVUS_TOKEN')
+        lancedbPath: envManager.get('LANCEDB_PATH')
     };
 
     return config;
@@ -98,7 +96,7 @@ export function logConfigurationSummary(config: ContextMcpConfig): void {
     console.log(`[MCP]   Server: ${config.name} v${config.version}`);
     console.log(`[MCP]   Embedding Provider: ${config.embeddingProvider}`);
     console.log(`[MCP]   Embedding Model: ${config.embeddingModel}`);
-    console.log(`[MCP]   Milvus Address: ${config.milvusAddress || (config.milvusToken ? '[Auto-resolve from token]' : '[Not configured]')}`);
+    console.log(`[MCP]   LanceDB Path: ${config.lancedbPath || '[Not configured, using OS temp dir]'}`);
 
     // Log provider-specific configuration without exposing sensitive data
     switch (config.embeddingProvider) {
@@ -127,7 +125,6 @@ export function showHelpMessage(): void {
     console.log(`
 Context MCP Server
 
-Usage: npx @zilliz/claude-context-mcp@latest [options]
 
 Options:
   --help, -h                          Show this help message
@@ -150,24 +147,16 @@ Environment Variables:
   OLLAMA_HOST             Ollama server host (default: http://127.0.0.1:11434)
   OLLAMA_MODEL            Ollama model name (default: nomic-embed-text)
   
-  Vector Database Configuration:
-  MILVUS_ADDRESS          Milvus address (optional, can be auto-resolved from token)
-  MILVUS_TOKEN            Milvus token (optional, used for authentication and address resolution)
+   Vector Database Configuration:
+   LANCEDB_PATH            Local directory path for LanceDB storage
 
 Examples:
-  # Start MCP server with OpenAI (default) and explicit Milvus address
-  OPENAI_API_KEY=sk-xxx MILVUS_ADDRESS=localhost:19530 npx @zilliz/claude-context-mcp@latest
-  
-  # Start MCP server with OpenAI and auto-resolve Milvus address from token
-  OPENAI_API_KEY=sk-xxx MILVUS_TOKEN=your-zilliz-token npx @zilliz/claude-context-mcp@latest
+  # Start MCP server with OpenAI and LanceDB at a local path
   
   # Start MCP server with VoyageAI
-  EMBEDDING_PROVIDER=VoyageAI VOYAGEAI_API_KEY=pa-xxx MILVUS_TOKEN=your-token npx @zilliz/claude-context-mcp@latest
   
   # Start MCP server with Gemini
-  EMBEDDING_PROVIDER=Gemini GEMINI_API_KEY=xxx MILVUS_TOKEN=your-token npx @zilliz/claude-context-mcp@latest
   
   # Start MCP server with Ollama
-  EMBEDDING_PROVIDER=Ollama EMBEDDING_MODEL=nomic-embed-text MILVUS_TOKEN=your-token npx @zilliz/claude-context-mcp@latest
         `);
 } 

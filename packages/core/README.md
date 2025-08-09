@@ -1,17 +1,14 @@
-# @zilliz/claude-context-core
-![](../../assets/claude-context.png)
+# code-context-core
 
-The core indexing engine for Claude Context - a powerful tool for semantic search and analysis of codebases using vector embeddings and AI.
+The core indexing engine for Code Context - a powerful tool for semantic search and analysis of codebases using vector embeddings and AI.
 
-[![npm version](https://img.shields.io/npm/v/@zilliz/claude-context-core.svg)](https://www.npmjs.com/package/@zilliz/claude-context-core)
-[![npm downloads](https://img.shields.io/npm/dm/@zilliz/claude-context-core.svg)](https://www.npmjs.com/package/@zilliz/claude-context-core)
 
-> 📖 **New to Claude Context?** Check out the [main project README](../../README.md) for an overview and quick start guide.
+> 📖 **New to Code Context?** Check out the [main project README](../../README.md) for an overview and quick start guide.
 
 ## Installation
 
 ```bash
-npm install @zilliz/claude-context-core
+npm install code-context-core
 ```
 
 ### Prepare Environment Variables
@@ -21,25 +18,21 @@ See [OpenAI Documentation](https://platform.openai.com/docs/api-reference) for m
 OPENAI_API_KEY=your-openai-api-key
 ```
 
-#### Zilliz Cloud configuration
-Get a free Milvus vector database on Zilliz Cloud. 
+#### local LanceDB configuration
+Get a free LanceDB vector database on local LanceDB. 
 
-Claude Context needs a vector database. You can [sign up](https://cloud.zilliz.com/signup?utm_source=github&utm_medium=referral&utm_campaign=2507-codecontext-readme) on Zilliz Cloud to get a free Serverless cluster.
+Code Context needs a vector database. You can [sign up](https://localhost.com/signup?utm_source=github&utm_medium=referral&utm_campaign=2507-codecontext-readme) on local LanceDB to get a free Serverless cluster.
 
 ![](../../assets/signup_and_create_cluster.jpeg)
 
-After creating your cluster, open your Zilliz Cloud console and copy both the **public endpoint** and your **API key**.  
-These will be used as `your-zilliz-cloud-public-endpoint` and `your-zilliz-cloud-api-key` in the configuration examples.
+After creating your cluster, open your local LanceDB console and copy both the **public endpoint** and your **API key**.  
 
-![Zilliz Cloud Dashboard](../../assets/zilliz_cloud_dashboard.jpeg)
 
 Keep both values handy for the configuration steps below.
 
-If you need help creating your free vector database or finding these values, see the [Zilliz Cloud documentation](https://docs.zilliz.com/docs/create-cluster) for detailed instructions.
 
 ```bash
-MILVUS_ADDRESS=your-zilliz-cloud-public-endpoint
-MILVUS_TOKEN=your-zilliz-cloud-api-key
+LANCEDB_PATH=./.lancedb
 ``` 
 
 > 💡 **Tip**: For easier configuration management across different usage scenarios, consider using [global environment variables](../../docs/getting-started/environment-variables.md).
@@ -50,8 +43,8 @@ MILVUS_TOKEN=your-zilliz-cloud-api-key
 import { 
   Context, 
   OpenAIEmbedding, 
-  MilvusVectorDatabase 
-} from '@zilliz/claude-context-core';
+  LanceDBVectorDatabase 
+} from 'code-context-core';
 
 // Initialize embedding provider
 const embedding = new OpenAIEmbedding({
@@ -60,9 +53,9 @@ const embedding = new OpenAIEmbedding({
 });
 
 // Initialize vector database
-const vectorDatabase = new MilvusVectorDatabase({
-  address: process.env.MILVUS_ADDRESS || 'localhost:19530',
-  token: process.env.MILVUS_TOKEN || ''
+const vectorDatabase = new LanceDBVectorDatabase({
+  address: process.env.LANCEDB_PATH || 'localhost:19530',
+  token: process.env.LANCEDB_PATH || ''
 });
 
 // Create context instance
@@ -109,7 +102,7 @@ results.forEach(result => {
 
 ## Vector Database Support
 
-- **Milvus/Zilliz Cloud** - High-performance vector database
+- **LanceDB/local LanceDB** - High-performance vector database
 
 ## Code Splitters
 
@@ -183,7 +176,7 @@ interface SemanticSearchResult {
 ### Using VoyageAI Embeddings
 
 ```typescript
-import { Context, MilvusVectorDatabase, VoyageAIEmbedding } from '@zilliz/claude-context-core';
+import { Context, LanceDBVectorDatabase, VoyageAIEmbedding } from 'code-context-core';
 
 // Initialize with VoyageAI embedding provider
 const embedding = new VoyageAIEmbedding({
@@ -191,9 +184,9 @@ const embedding = new VoyageAIEmbedding({
   model: 'voyage-code-3'
 });
 
-const vectorDatabase = new MilvusVectorDatabase({
-  address: process.env.MILVUS_ADDRESS || 'localhost:19530',
-  token: process.env.MILVUS_TOKEN || ''
+const vectorDatabase = new LanceDBVectorDatabase({
+  address: process.env.LANCEDB_PATH || 'localhost:19530',
+  token: process.env.LANCEDB_PATH || ''
 });
 
 const context = new Context({
@@ -220,7 +213,7 @@ const context = new Context({
 
 ## File Synchronization Architecture
 
-Claude Context implements an intelligent file synchronization system that efficiently tracks and processes only the files that have changed since the last indexing operation. This dramatically improves performance when working with large codebases.
+Code Context implements an intelligent file synchronization system that efficiently tracks and processes only the files that have changed since the last indexing operation. This dramatically improves performance when working with large codebases.
 
 ![File Synchronization Architecture](../../assets/file_synchronizer.png)
 
@@ -260,7 +253,7 @@ The file synchronization system uses a **Merkle tree-based approach** combined w
 
 ## Contributing
 
-This package is part of the Claude Context monorepo. Please see:
+This package is part of the Code Context monorepo. Please see:
 - [Main Contributing Guide](../../CONTRIBUTING.md) - General contribution guidelines
 - [Core Package Contributing](CONTRIBUTING.md) - Specific development guide for this package
 

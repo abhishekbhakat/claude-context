@@ -1,6 +1,6 @@
 # Basic Usage Example
 
-This example demonstrates the basic usage of Claude Context.
+This example demonstrates the basic usage of Code Context.
 
 ## Prerequisites
 
@@ -9,19 +9,18 @@ This example demonstrates the basic usage of Claude Context.
    export OPENAI_API_KEY="your-openai-api-key"
    ```
 
-2. **Milvus Server**: Make sure Milvus server is running:
-- You can also use fully managed Milvus on [Zilliz Cloud](https://zilliz.com/cloud). 
-    In this case, set the `MILVUS_ADDRESS` as the Public Endpoint and `MILVUS_TOKEN` as the Token like this:
+2. **LanceDB Server**: Make sure LanceDB server is running:
+    In this case, set the `LANCEDB_PATH` as the Path and `LANCEDB_PATH` as the Token like this:
     ```bash
-    export MILVUS_ADDRESS="https://your-cluster.zillizcloud.com"
-    export MILVUS_TOKEN="your-zilliz-token"
+    export LANCEDB_PATH="https://your-cluster.lancedbcloud.com"
+    export LANCEDB_PATH="your-lancedb-token"
     ```
 
 
-- You can also set up a Milvus server on [Docker or Kubernetes](https://milvus.io/docs/install-overview.md). In this setup, please use the server address and port as your `uri`, e.g.`http://localhost:19530`. If you enable the authentication feature on Milvus, set the `token` as `"<your_username>:<your_password>"`, otherwise there is no need to set the token.
+- You can also set up a LanceDB server on [Docker or Kubernetes](https://LanceDB.io/docs/install-overview.md). In this setup, please use the server address and port as your `uri`, e.g.`http://localhost:19530`. If you enable the authentication feature on LanceDB, set the `token` as `"<your_username>:<your_password>"`, otherwise there is no need to set the token.
     ```bash
-    export MILVUS_ADDRESS="http://localhost:19530"
-    export MILVUS_TOKEN="<your_username>:<your_password>"
+    export LANCEDB_PATH="http://localhost:19530"
+    export LANCEDB_PATH="<your_username>:<your_password>"
     ```
 
 
@@ -40,14 +39,14 @@ This example demonstrates the basic usage of Claude Context.
    ```
 
 ## What This Example Does
-1. **Indexes Codebase**: Indexes the entire Claude Context project
+1. **Indexes Codebase**: Indexes the entire Code Context project
 2. **Performs Searches**: Executes semantic searches for different code patterns
 3. **Shows Results**: Displays search results with similarity scores and file locations
 
 ## Expected Output
 
 ```
-🚀 Claude Context Real Usage Example
+🚀 Code Context Real Usage Example
 ===============================
 ...
 🔌 Connecting to vector database at: ...
@@ -60,7 +59,7 @@ This example demonstrates the basic usage of Claude Context.
 
 🔎 Search: "vector database operations"
    1. Similarity: 89.23%
-      File: /path/to/packages/core/src/vectordb/milvus-vectordb.ts
+      File: /path/to/packages/core/src/vectordb/LanceDB-vectordb.ts
       Language: typescript
       Lines: 147-177
       Preview: async search(collectionName: string, queryVector: number[], options?: SearchOptions)...

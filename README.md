@@ -1,22 +1,12 @@
-![](assets/claude-context.png)
 ### Your entire codebase as Claude's context
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/Node.js-20%2B-green.svg)](https://nodejs.org/)
-[![Documentation](https://img.shields.io/badge/Documentation-📚-orange.svg)](docs/)
-[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/zilliz.semanticcodesearch?label=VS%20Code%20Extension&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=zilliz.semanticcodesearch)
-[![npm - core](https://img.shields.io/npm/v/@zilliz/claude-context-core?label=%40zilliz%2Fclaude-context-core&logo=npm)](https://www.npmjs.com/package/@zilliz/claude-context-core)
-[![npm - mcp](https://img.shields.io/npm/v/@zilliz/claude-context-mcp?label=%40zilliz%2Fclaude-context-mcp&logo=npm)](https://www.npmjs.com/package/@zilliz/claude-context-mcp)
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/zilliz_universe.svg?style=social&label=Follow%20%40Zilliz)](https://twitter.com/zilliz_universe)
-[![DeepWiki](https://img.shields.io/badge/DeepWiki-AI%20Docs-purple.svg?logo=gitbook&logoColor=white)](https://deepwiki.com/zilliztech/claude-context)
-<a href="https://discord.gg/mKc3R95yE5"><img height="20" src="https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white" alt="discord" /></a>
 </div>
 
-**Claude Context** is an MCP plugin that adds semantic code search to Claude Code and other AI coding agents, giving them deep context from your entire codebase.
+**Code Context** is an MCP plugin that adds semantic code search to Claude Code and other AI coding agents, giving them deep context from your entire codebase.
 
-🧠 **Your Entire Codebase as Context**: Claude Context uses semantic search to find all relevant code from millions of lines. No multi-round discovery needed. It brings results straight into the Claude's context.
+🧠 **Your Entire Codebase as Context**: Code Context uses semantic search to find all relevant code from millions of lines. No multi-round discovery needed. It brings results straight into the Claude's context.
 
-💰 **Cost-Effective for Large Codebases**: Instead of loading entire directories into Claude for every request, which can be very expensive, Claude Context efficiently stores your codebase in a vector database and only uses related code in context to keep your costs manageable.
+💰 **Cost-Effective for Large Codebases**: Instead of loading entire directories into Claude for every request, which can be very expensive, Code Context efficiently stores your codebase in a vector database and only uses related code in context to keep your costs manageable.
 
 ---
 
@@ -24,19 +14,19 @@
 
 ![img](https://lh7-rt.googleusercontent.com/docsz/AD_4nXf2uIf2c5zowp-iOMOqsefHbY_EwNGiutkxtNXcZVJ8RI6SN9DsCcsc3amXIhOZx9VcKFJQLSAqM-2pjU9zoGs1r8GCTUL3JIsLpLUGAm1VQd5F2o5vpEajx2qrc77iXhBu1zWj?key=qYdFquJrLcfXCUndY-YRBQ)
 
-Model Context Protocol (MCP) allows you to integrate Claude Context with your favorite AI coding assistants, e.g. Claude Code.
+Model Context Protocol (MCP) allows you to integrate Code Context with your favorite AI coding assistants, e.g. Claude Code.
 
 ## Quick Start
 ### Prerequisites
 
 <details>
-<summary>Get a free vector database on Zilliz Cloud 👈</summary>
+<summary>Get a free vector database on local LanceDB 👈</summary>
 
-Claude Context needs a vector database. You can [sign up](https://cloud.zilliz.com/signup?utm_source=github&utm_medium=referral&utm_campaign=2507-codecontext-readme) on Zilliz Cloud to get an API key.
+Code Context needs a vector database. You can [sign up](https://localhost.com/signup?utm_source=github&utm_medium=referral&utm_campaign=2507-codecontext-readme) on local LanceDB to get an API key.
 
 ![](assets/signup_and_get_apikey.png)
 
-Copy your Personal Key to replace `your-zilliz-cloud-api-key` in the configuration examples.
+Copy your Personal Key to replace `./.lancedb` in the configuration examples.
 </details>
 
 <details>
@@ -53,15 +43,14 @@ Copy your key and use it in the configuration examples below as `your-openai-api
 
 **System Requirements:**
 - Node.js >= 20.0.0 and < 24.0.0
-> Claude Context is not compatible with Node.js 24.0.0, you need downgrade it first if your node version is greater or equal to 24.
+> Code Context is not compatible with Node.js 24.0.0, you need downgrade it first if your node version is greater or equal to 24.
 
 #### Configuration
 
-Use the command line interface to add the Claude Context MCP server:
+Use the command line interface to add the Code Context MCP server:
 
 ```bash
-# Add the Claude Context MCP server
-claude mcp add claude-context -e OPENAI_API_KEY=your-openai-api-key -e MILVUS_TOKEN=your-zilliz-cloud-api-key -- npx @zilliz/claude-context-mcp@latest
+claude mcp add claude-context -e OPENAI_API_KEY=your-openai-api-key -e LANCEDB_PATH=./.lancedb -- node packages/mcp/dist/index.js
 ```
 
 See the [Claude Code MCP documentation](https://docs.anthropic.com/en/docs/claude-code/mcp) for more details about MCP server management.
@@ -82,10 +71,10 @@ Gemini CLI requires manual configuration through a JSON file:
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["@zilliz/claude-context-mcp@latest"],
+      "args": ["@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -105,11 +94,11 @@ Create or edit the `~/.qwen/settings.json` file and add the following configurat
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["@zilliz/claude-context-mcp@latest"],
+      "args": ["@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -133,11 +122,11 @@ Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file i
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -158,11 +147,11 @@ Add the following configuration to your Void MCP settings:
   "mcpServers": {
     "code-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -181,11 +170,11 @@ Add to your Claude Desktop configuration:
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["@zilliz/claude-context-mcp@latest"],
+      "args": ["@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -204,11 +193,11 @@ Windsurf supports MCP configuration through a JSON file. Add the following confi
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -220,18 +209,18 @@ Windsurf supports MCP configuration through a JSON file. Add the following confi
 <details>
 <summary><strong>VS Code</strong></summary>
 
-The Claude Context MCP server can be used with VS Code through MCP-compatible extensions. Add the following configuration to your VS Code MCP settings:
+The Code Context MCP server can be used with VS Code through MCP-compatible extensions. Add the following configuration to your VS Code MCP settings:
 
 ```json
 {
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -250,11 +239,11 @@ Cherry Studio allows for visual MCP server configuration through its settings in
    - **Name**: `claude-context`
    - **Type**: `STDIO`
    - **Command**: `npx`
-   - **Arguments**: `["@zilliz/claude-context-mcp@latest"]`
+   - **Arguments**: `["@lancedb/claude-context-mcp@latest"]`
    - **Environment Variables**:
      - `OPENAI_API_KEY`: `your-openai-api-key`
-     - `MILVUS_ADDRESS`: `your-zilliz-cloud-public-endpoint`
-     - `MILVUS_TOKEN`: `your-zilliz-cloud-api-key`
+     - `LANCEDB_PATH`: `your-lancedb-cloud-path`
+     - `LANCEDB_PATH`: `./.lancedb`
 3. Save the configuration to activate the server.
 
 </details>
@@ -275,11 +264,11 @@ Cline uses a JSON configuration file to manage MCP servers. To integrate the pro
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["@zilliz/claude-context-mcp@latest"],
+      "args": ["@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -293,7 +282,7 @@ Cline uses a JSON configuration file to manage MCP servers. To integrate the pro
 <details>
 <summary><strong>Augment</strong></summary>
 
-To configure Claude Context MCP in Augment Code, you can use either the graphical interface or manual configuration.
+To configure Code Context MCP in Augment Code, you can use either the graphical interface or manual configuration.
 
 #### **A. Using the Augment Code UI**
 
@@ -308,10 +297,10 @@ To configure Claude Context MCP in Augment Code, you can use either the graphica
 5. Enter the following command:
 
    ```
-   npx @zilliz/claude-context-mcp@latest
+   node packages/mcp/dist/index.js
    ```
 
-6. Name the MCP: **Claude Context**.
+6. Name the MCP: **Code Context**.
 
 7. Click the **Add** button.
 
@@ -330,11 +319,11 @@ To configure Claude Context MCP in Augment Code, you can use either the graphica
     { 
       "name": "claude-context", 
       "command": "npx", 
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"],
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   ]
@@ -357,11 +346,11 @@ Roo Code utilizes a JSON configuration file for MCP servers:
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["@zilliz/claude-context-mcp@latest"],
+      "args": ["@lancedb/claude-context-mcp@latest"],
       "env": {
         "OPENAI_API_KEY": "your-openai-api-key",
-        "MILVUS_ADDRESS": "your-zilliz-cloud-public-endpoint",
-        "MILVUS_TOKEN": "your-zilliz-cloud-api-key"
+        "LANCEDB_PATH": "your-lancedb-cloud-path",
+        "LANCEDB_PATH": "./.lancedb"
       }
     }
   }
@@ -379,7 +368,7 @@ Roo Code utilizes a JSON configuration file for MCP servers:
 The server uses stdio transport and follows the standard MCP protocol. It can be integrated with any MCP-compatible client by running:
 
 ```bash
-npx @zilliz/claude-context-mcp@latest
+node packages/mcp/dist/index.js
 ```
 
 </details>
@@ -403,35 +392,34 @@ For more detailed MCP environment variable configuration, see our [Environment V
 - 🧠 **Context-Aware**: Discover large codebase, understand how different parts of your codebase relate, even across millions of lines of code.
 - ⚡ **Incremental Indexing**: Efficiently re-index only changed files using Merkle trees.
 - 🧩 **Intelligent Code Chunking**: Analyze code in Abstract Syntax Trees (AST) for chunking.
-- 🗄️ **Scalable**: Integrates with Zilliz Cloud for scalable vector search, no matter how large your codebase is.
+- 🗄️ **Scalable**: Integrates with local LanceDB for scalable vector search, no matter how large your codebase is.
 - 🛠️ **Customizable**: Configure file extensions, ignore patterns, and embedding models.
 
 ### Core Components
-Claude Context is a monorepo containing three main packages:
+Code Context is a monorepo containing three main packages:
 
-- **`@zilliz/claude-context-core`**: Core indexing engine with embedding and vector database integration
+- **`@lancedb/claude-context-core`**: Core indexing engine with embedding and vector database integration
 - **VSCode Extension**: Semantic Code Search extension for Visual Studio Code
-- **`@zilliz/claude-context-mcp`**: Model Context Protocol server for AI agent integration
+- **`@lancedb/claude-context-mcp`**: Model Context Protocol server for AI agent integration
 
 ### Supported Technologies
 - **Embedding Providers**: [OpenAI](https://openai.com), [VoyageAI](https://voyageai.com), [Ollama](https://ollama.ai), [Gemini](https://gemini.google.com)
-- **Vector Databases**: [Milvus](https://milvus.io) or [Zilliz Cloud](https://zilliz.com/cloud)(fully managed vector database as a service)
 - **Code Splitters**: AST-based splitter (with automatic fallback), LangChain character-based splitter
 - **Languages**: TypeScript, JavaScript, Python, Java, C++, C#, Go, Rust, PHP, Ruby, Swift, Kotlin, Scala, Markdown
 - **Development Tools**: VSCode, Model Context Protocol
 
 ---
 
-## 📦 Other Ways to Use Claude Context
+## 📦 Other Ways to Use Code Context
 
-While MCP is the recommended way to use Claude Context with AI assistants, you can also use it directly or through the VSCode extension.
+While MCP is the recommended way to use Code Context with AI assistants, you can also use it directly or through the VSCode extension.
 
 ### Build Applications with Core Package
 
-The `@zilliz/claude-context-core` package provides the fundamental functionality for code indexing and semantic search.
+The `@lancedb/claude-context-core` package provides the fundamental functionality for code indexing and semantic search.
 
 ```typescript
-import { Context, MilvusVectorDatabase, OpenAIEmbedding } from '@zilliz/claude-context-core';
+import { Context, LanceDBVectorDatabase, OpenAIEmbedding } from '@lancedb/claude-context-core';
 
 // Initialize embedding provider
 const embedding = new OpenAIEmbedding({
@@ -440,9 +428,9 @@ const embedding = new OpenAIEmbedding({
 });
 
 // Initialize vector database
-const vectorDatabase = new MilvusVectorDatabase({
-    address: process.env.MILVUS_ADDRESS || 'your-zilliz-cloud-public-endpoint',
-    token: process.env.MILVUS_TOKEN || 'your-zilliz-cloud-api-key'
+const vectorDatabase = new LanceDBVectorDatabase({
+    address: process.env.LANCEDB_PATH || 'your-lancedb-cloud-path',
+    token: process.env.LANCEDB_PATH || './.lancedb'
 });
 
 // Create context instance
@@ -468,9 +456,8 @@ results.forEach(result => {
 
 ### VSCode Extension
 
-Integrates Claude Context directly into your IDE. Provides an intuitive interface for semantic code search and navigation.
+Integrates Code Context directly into your IDE. Provides an intuitive interface for semantic code search and navigation.
 
-1. **Direct Link**: [Install from VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=zilliz.semanticcodesearch)
 2. **Manual Search**:
     - Open Extensions view in VSCode (Ctrl+Shift+X or Cmd+Shift+X on Mac)
     - Search for "Semantic Code Search"
@@ -485,7 +472,6 @@ Integrates Claude Context directly into your IDE. Provides an intuitive interfac
 
 ```bash
 # Clone repository
-git clone https://github.com/zilliztech/claude-context.git
 cd claude-context
 
 # Install dependencies
@@ -520,7 +506,7 @@ pnpm dev
 
 ### Supported File Extensions
 
-By default, Claude Context supports:
+By default, Code Context supports:
 - Programming languages: `.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.java`, `.cpp`, `.c`, `.h`, `.hpp`, `.cs`, `.go`, `.rs`, `.php`, `.rb`, `.swift`, `.kt`, `.scala`, `.m`, `.mm`
 - Documentation: `.md`, `.markdown`, `.ipynb`
 
@@ -551,7 +537,7 @@ Check the `/examples` directory for complete usage examples:
 
 **Common Questions:**
 
-- **[What files does Claude Context decide to embed?](docs/troubleshooting/faq.md#q-what-files-does-claude-context-decide-to-embed)**
+- **[What files does Code Context decide to embed?](docs/troubleshooting/faq.md#q-what-files-does-claude-context-decide-to-embed)**
 - **[Can I use a fully local deployment setup?](docs/troubleshooting/faq.md#q-can-i-use-a-fully-local-deployment-setup)**
 - **[Does it support multiple projects / codebases?](docs/troubleshooting/faq.md#q-does-it-support-multiple-projects--codebases)**
 
@@ -589,7 +575,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/zilliztech/claude-context)
-- [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=zilliz.semanticcodesearch)
-- [Milvus Documentation](https://milvus.io/docs)
-- [Zilliz Cloud](https://zilliz.com/cloud)
+- [LanceDB Documentation](https://LanceDB.io/docs)

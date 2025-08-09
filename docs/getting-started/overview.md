@@ -1,8 +1,8 @@
 # Project Overview
 
-## What is Claude Context?
+## What is Code Context?
 
-Claude Context is a powerful semantic code search tool that gives AI coding assistants deep understanding of your entire codebase. Instead of traditional keyword-based search, Claude Context uses vector embeddings and AI to understand the meaning and context of your code.
+Code Context is a powerful semantic code search tool that gives AI coding assistants deep understanding of your entire codebase. Instead of traditional keyword-based search, Code Context uses vector embeddings and AI to understand the meaning and context of your code.
 
 ## Key Features
 
@@ -19,7 +19,7 @@ Efficiently re-index only changed files using Merkle trees, making it fast to ke
 Uses Abstract Syntax Trees (AST) to intelligently split code into meaningful chunks that preserve context and structure.
 
 ### 🗄️ Scalable Architecture
-Integrates with Zilliz Cloud for scalable vector search, handling codebases of any size.
+Integrates with local LanceDB for scalable vector search, handling codebases of any size.
 
 ### 🛠️ Highly Customizable
 Configure file extensions, ignore patterns, embedding models, and search parameters to fit your specific needs.
@@ -27,7 +27,7 @@ Configure file extensions, ignore patterns, embedding models, and search paramet
 ## How It Works
 
 ### 1. Code Analysis
-Claude Context analyzes your codebase using AST parsers to understand code structure and semantics.
+Code Context analyzes your codebase using AST parsers to understand code structure and semantics.
 
 ### 2. Intelligent Chunking
 Code is split into meaningful chunks that preserve context, function boundaries, and logical groupings.
@@ -36,21 +36,21 @@ Code is split into meaningful chunks that preserve context, function boundaries,
 Each code chunk is converted into high-dimensional vectors using state-of-the-art embedding models.
 
 ### 4. Vector Storage
-Embeddings are stored in a vector database (Milvus/Zilliz Cloud) for efficient similarity search.
+Embeddings are stored in a vector database (LanceDB/local LanceDB) for efficient similarity search.
 
 ### 5. Hybrid Search
 Natural language queries are processed using both dense vector embeddings and BM25 sparse retrieval, then combined with RRF (Reciprocal Rank Fusion) for optimal results.
 
 ## Architecture Components
 
-### Core Engine (`@zilliz/claude-context-core`)
+### Core Engine (`@lancedb/claude-context-core`)
 The foundational indexing engine that handles:
 - Code parsing and analysis
 - Embedding generation
 - Vector database operations
 - Search algorithms
 
-### MCP Server (`@zilliz/claude-context-mcp`)
+### MCP Server (`@lancedb/claude-context-mcp`)
 Model Context Protocol server that enables integration with AI assistants:
 - Standardized tool interface
 - Compatible with Claude Code, Cursor, Windsurf, and more
@@ -83,8 +83,8 @@ GitHub integration for web-based development:
 - **Ollama**: Local embedding models for privacy-focused development
 
 ### Vector Databases
-- **Milvus**: Open-source vector database
-- **Zilliz Cloud**: Fully managed vector database service
+- **LanceDB**: Open-source vector database
+- **local LanceDB**: Fully managed vector database service
 
 ### AI Assistant Integration
 - **Claude Code**: Native MCP integration

@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as crypto from "crypto";
-import { Context, COLLECTION_LIMIT_MESSAGE } from "@zilliz/claude-context-core";
+import { Context } from "code-context-core";
 import { SnapshotManager } from "./snapshot.js";
 import { ensureAbsolutePath, truncateContent, trackCodebasePath } from "./utils.js";
 
@@ -19,18 +19,18 @@ export class ToolHandlers {
     }
 
     /**
-     * Sync indexed codebases from Zilliz Cloud collections
+     * Sync indexed codebases from local LanceDB collections
      * This method fetches all collections from the vector database,
      * gets the first document from each collection to extract codebasePath from metadata,
      * and updates the snapshot with discovered codebases.
      * 
-     * Logic: Compare mcp-codebase-snapshot.json with zilliz cloud collections
+     * Logic: Compare mcp-codebase-snapshot.json with local lancedb collections
      * - If local snapshot has extra directories (not in cloud), remove them
      * - If local snapshot is missing directories (exist in cloud), ignore them
      */
     private async syncIndexedCodebasesFromCloud(): Promise<void> {
         try {
-            console.log(`[SYNC-CLOUD] 🔄 Syncing indexed codebases from Zilliz Cloud...`);
+            console.log(`[SYNC-CLOUD] 🔄 Syncing indexed codebases from local LanceDB...`);
 
             // Get all collections using the interface method
             const vectorDb = this.context.getVectorDatabase();
@@ -38,7 +38,7 @@ export class ToolHandlers {
             // Use the new listCollections method from the interface
             const collections = await vectorDb.listCollections();
 
-            console.log(`[SYNC-CLOUD] 📋 Found ${collections.length} collections in Zilliz Cloud`);
+            console.log(`[SYNC-CLOUD] 📋 Found ${collections.length} collections in local LanceDB`);
 
             if (collections.length === 0) {
                 console.log(`[SYNC-CLOUD] ✅ No collections found in cloud`);
@@ -241,31 +241,15 @@ export class ToolHandlers {
                 }
                 console.log(`[INDEX-VALIDATION] ✅  Collection creation validation completed`);
             } catch (validationError: any) {
-                const errorMessage = typeof validationError === 'string' ? validationError :
-                    (validationError instanceof Error ? validationError.message : String(validationError));
-
-                if (errorMessage === COLLECTION_LIMIT_MESSAGE || errorMessage.includes(COLLECTION_LIMIT_MESSAGE)) {
-                    console.error(`[INDEX-VALIDATION] ❌ Collection limit validation failed: ${absolutePath}`);
-
-                    // CRITICAL: Immediately return the COLLECTION_LIMIT_MESSAGE to MCP client
-                    return {
-                        content: [{
-                            type: "text",
-                            text: COLLECTION_LIMIT_MESSAGE
-                        }],
-                        isError: true
-                    };
-                } else {
-                    // Handle other collection creation errors
-                    console.error(`[INDEX-VALIDATION] ❌ Collection creation validation failed:`, validationError);
-                    return {
-                        content: [{
-                            type: "text",
-                            text: `Error validating collection creation: ${validationError.message || validationError}`
-                        }],
-                        isError: true
-                    };
-                }
+                // Handle collection creation validation errors (no LanceDB-specific limits)
+                console.error(`[INDEX-VALIDATION] ❌ Collection creation validation failed:`, validationError);
+                return {
+                    content: [{
+                        type: "text",
+                        text: `Error validating collection creation: ${validationError.message || validationError}`
+                    }],
+                    isError: true
+                };
             }
 
             // Add custom extensions if provided
@@ -346,7 +330,7 @@ export class ToolHandlers {
             await this.context.getLoadedIgnorePatterns(absolutePath);
 
             // Initialize file synchronizer with proper ignore patterns (including project-specific patterns)
-            const { FileSynchronizer } = await import("@zilliz/claude-context-core");
+            const { FileSynchronizer } = await import("code-context-core");
             const ignorePatterns = this.context.getIgnorePatterns() || [];
             console.log(`[BACKGROUND-INDEX] Using ignore patterns: ${ignorePatterns.join(', ')}`);
             const synchronizer = new FileSynchronizer(absolutePath, ignorePatterns);
@@ -410,7 +394,7 @@ export class ToolHandlers {
     }
 
     public async handleSearchCode(args: any) {
-        const { path: codebasePath, query, limit = 10, extensionFilter } = args;
+        const { path: codebasePath, query, limit = 10 } = args;
         const resultLimit = limit || 10;
 
         try {
@@ -474,23 +458,8 @@ export class ToolHandlers {
             console.log(`[SEARCH] 🧠 Using embedding provider: ${embeddingProvider.getProvider()} for search`);
             console.log(`[SEARCH] 🔍 Generating embeddings for query using ${embeddingProvider.getProvider()}...`);
 
-            // Build filter expression from extensionFilter list
-            let filterExpr: string | undefined = undefined;
-            if (Array.isArray(extensionFilter) && extensionFilter.length > 0) {
-                const cleaned = extensionFilter
-                    .filter((v: any) => typeof v === 'string')
-                    .map((v: string) => v.trim())
-                    .filter((v: string) => v.length > 0);
-                const invalid = cleaned.filter((e: string) => !(e.startsWith('.') && e.length > 1 && !/\s/.test(e)));
-                if (invalid.length > 0) {
-                    return {
-                        content: [{ type: 'text', text: `Error: Invalid file extensions in extensionFilter: ${JSON.stringify(invalid)}. Use proper extensions like '.ts', '.py'.` }],
-                        isError: true
-                    };
-                }
-                const quoted = cleaned.map((e: string) => `'${e}'`).join(', ');
-                filterExpr = `fileExtension in [${quoted}]`;
-            }
+            // Extension filter disabled for LanceDB path per requirements
+            const filterExpr: string | undefined = undefined;
 
             // Search in the specified codebase
             const searchResults = await this.context.semanticSearch(
@@ -541,20 +510,7 @@ export class ToolHandlers {
                 }]
             };
         } catch (error) {
-            // Check if this is the collection limit error
-            // Handle both direct string throws and Error objects containing the message
             const errorMessage = typeof error === 'string' ? error : (error instanceof Error ? error.message : String(error));
-
-            if (errorMessage === COLLECTION_LIMIT_MESSAGE || errorMessage.includes(COLLECTION_LIMIT_MESSAGE)) {
-                // Return the collection limit message as a successful response
-                // This ensures LLM treats it as final answer, not as retryable error
-                return {
-                    content: [{
-                        type: "text",
-                        text: COLLECTION_LIMIT_MESSAGE
-                    }]
-                };
-            }
 
             return {
                 content: [{
@@ -662,20 +618,7 @@ export class ToolHandlers {
                 }]
             };
         } catch (error) {
-            // Check if this is the collection limit error
-            // Handle both direct string throws and Error objects containing the message
             const errorMessage = typeof error === 'string' ? error : (error instanceof Error ? error.message : String(error));
-
-            if (errorMessage === COLLECTION_LIMIT_MESSAGE || errorMessage.includes(COLLECTION_LIMIT_MESSAGE)) {
-                // Return the collection limit message as a successful response
-                // This ensures LLM treats it as final answer, not as retryable error
-                return {
-                    content: [{
-                        type: "text",
-                        text: COLLECTION_LIMIT_MESSAGE
-                    }]
-                };
-            }
 
             return {
                 content: [{

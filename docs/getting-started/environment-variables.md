@@ -2,7 +2,7 @@
 
 ## 🎯 Global Configuration
 
-Claude Context supports a global configuration file at `~/.context/.env` to simplify MCP setup across different MCP clients.
+Code Context supports a global configuration file at `~/.context/.env` to simplify MCP setup across different MCP clients.
 
 **Benefits:**
 - Configure once, use everywhere
@@ -28,8 +28,7 @@ Claude Context supports a global configuration file at `~/.context/.env` to simp
 ### Vector Database
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `MILVUS_TOKEN` | Milvus authentication token. Get [Zilliz Personal API Key](https://github.com/zilliztech/claude-context/blob/master/assets/signup_and_get_apikey.png) | Recommended |
-| `MILVUS_ADDRESS` | Milvus server address. Optional when using Zilliz Personal API Key | Auto-resolved from token |
+| `LANCEDB_PATH` | LanceDB server address. Optional when using LanceDB Personal API Key | Auto-resolved from token |
 
 ### Ollama (Local)
 | Variable | Description | Default |
@@ -54,7 +53,7 @@ mkdir -p ~/.context
 cat > ~/.context/.env << 'EOF'
 EMBEDDING_PROVIDER=OpenAI
 OPENAI_API_KEY=sk-your-openai-api-key
-MILVUS_TOKEN=your-zilliz-cloud-api-key
+LANCEDB_PATH=./.lancedb
 EOF
 ```
 
@@ -62,7 +61,7 @@ EOF
 
 **Claude Code:**
 ```bash
-claude mcp add claude-context -- npx @zilliz/claude-context-mcp@latest
+claude mcp add claude-context -- node packages/mcp/dist/index.js
 ```
 
 **Cursor/Windsurf/Others:**
@@ -71,7 +70,7 @@ claude mcp add claude-context -- npx @zilliz/claude-context-mcp@latest
   "mcpServers": {
     "claude-context": {
       "command": "npx",
-      "args": ["-y", "@zilliz/claude-context-mcp@latest"]
+      "args": ["-y", "@lancedb/claude-context-mcp@latest"]
     }
   }
 }
@@ -80,5 +79,5 @@ claude mcp add claude-context -- npx @zilliz/claude-context-mcp@latest
 ## 📚 Additional Information
 
 For detailed information about file processing rules and how custom patterns work, see:
-- [What files does Claude Context decide to embed?](../troubleshooting/faq.md#q-what-files-does-claude-context-decide-to-embed)
+- [What files does Code Context decide to embed?](../troubleshooting/faq.md#q-what-files-does-claude-context-decide-to-embed)
  

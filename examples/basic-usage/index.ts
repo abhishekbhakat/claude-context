@@ -1,5 +1,5 @@
-import { Context, MilvusVectorDatabase, MilvusRestfulVectorDatabase, AstCodeSplitter, LangChainCodeSplitter } from '@zilliz/claude-context-core';
-import { envManager } from '@zilliz/claude-context-core';
+import { Context, LanceVectorDatabase, AstCodeSplitter, LangChainCodeSplitter } from 'code-context-core';
+import { envManager } from 'code-context-core';
 import * as path from 'path';
 
 // Try to load .env file
@@ -14,31 +14,13 @@ async function main() {
     console.log('===============================');
 
     try {
-        // 1. Choose Vector Database implementation
-        // Set to true to use RESTful API (for environments without gRPC support)
-        // Set to false to use gRPC (default, more efficient)
-        const useRestfulApi = false;
-        const milvusAddress = envManager.get('MILVUS_ADDRESS') || 'localhost:19530';
-        const milvusToken = envManager.get('MILVUS_TOKEN');
+        // 1. Vector Database (LanceDB only)
+        const lancedbPath = envManager.get('LANCEDB_PATH') || './.lancedb';
         const splitterType = envManager.get('SPLITTER_TYPE')?.toLowerCase() || 'ast';
 
-        console.log(`🔧 Using ${useRestfulApi ? 'RESTful API' : 'gRPC'} implementation`);
-        console.log(`🔌 Connecting to Milvus at: ${milvusAddress}`);
+        console.log(`🔧 Using LanceDB at path: ${lancedbPath}`);
 
-        let vectorDatabase;
-        if (useRestfulApi) {
-            // Use RESTful implementation (for environments without gRPC support)
-            vectorDatabase = new MilvusRestfulVectorDatabase({
-                address: milvusAddress,
-                ...(milvusToken && { token: milvusToken })
-            });
-        } else {
-            // Use gRPC implementation (default, more efficient)
-            vectorDatabase = new MilvusVectorDatabase({
-                address: milvusAddress,
-                ...(milvusToken && { token: milvusToken })
-            });
-        }
+        const vectorDatabase = new LanceVectorDatabase({ dbPath: lancedbPath });
 
         // 2. Create Context instance
         let codeSplitter;
@@ -107,20 +89,12 @@ async function main() {
             if (error.message.includes('API key')) {
                 console.log('\n💡 Please make sure to set the correct OPENAI_API_KEY environment variable');
                 console.log('   Example: export OPENAI_API_KEY="your-actual-api-key"');
-            } else if (error.message.includes('Milvus') || error.message.includes('connect')) {
-                console.log('\n💡 Please make sure Milvus service is running');
-                console.log('   - Default address: localhost:19530');
-                console.log('   - Can be modified via MILVUS_ADDRESS environment variable');
-                console.log('   - For RESTful API: set MILVUS_USE_RESTFUL=true');
-                console.log('   - For gRPC (default): set MILVUS_USE_RESTFUL=false or leave unset');
-                console.log('   - Start Milvus: docker run -p 19530:19530 milvusdb/milvus:latest');
             }
 
             console.log('\n💡 Environment Variables:');
             console.log('   - OPENAI_API_KEY: Your OpenAI API key (required)');
             console.log('   - OPENAI_BASE_URL: Custom OpenAI API endpoint (optional)');
-            console.log('   - MILVUS_ADDRESS: Milvus server address (default: localhost:19530)');
-            console.log('   - MILVUS_TOKEN: Milvus authentication token (optional)');
+            console.log('   - LANCEDB_PATH: Local LanceDB path (e.g., ./.lancedb)');
             console.log('   - SPLITTER_TYPE: Code splitter type - "ast" or "langchain" (default: ast)');
         }
 
